@@ -1,0 +1,9 @@
+env
+platzigram/asgi.py
+platzigram/wsgi.py
+platzigram/__init__.py
+platzigram/__settings__.py
+manage.py
+
+
+
