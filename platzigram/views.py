@@ -29,3 +29,13 @@ def sorted_numbers(request):
       content_type='application/json'
       )
     # Esto nos devueve un contenido del tipo application json.
+
+
+def say_hi(request, name, age):
+    """ Retunr a greeting."""
+    # Age entra como entero
+    if age < 12:
+        message = f"Sorry {name} you're not allowed here"
+    else: 
+        message = f'{name} welcome to platzigram'
+    return HttpResponse(message)
