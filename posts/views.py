@@ -1,8 +1,8 @@
 """Posts views"""
 
 # Django
-# from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render
+# from django.http import HttpResponse
 
 # utilities
 from datetime import datetime
@@ -11,34 +11,35 @@ from datetime import datetime
 
 posts = [
     {
-        'name': 'Mont Blac',
-        'user': 'Yesica Cortes',
+        'title': 'Mont Blac',
+        'user': {
+            'name':'Yesica Cortes',
+            'picture': 'https://i.picsum.photos/id/1036/200/200.jpg',
+        },
         'timestamp': datetime.now().strftime('%b %dth, %Y - %H:%M hrs'),
-        'picture': 'https://i.picsum.photos/id/1036/200/200.jpg',
+        'photo': 'https://i.picsum.photos/id/1036/200/200.jpg',
     },
     {
-        'name': 'Via Láctea',
-        'user': 'C. Vander',
+        'title': 'Via Láctea',
+        'user': {
+            'name':'C. Vander',
+            'picture': 'https://picsum.photos/200/200/?image=903',
+        },
         'timestamp': datetime.now().strftime('%b %dth, %Y - %H:%M hrs'),
-        'picture': 'https://picsum.photos/200/200/?image=903',
+        'photo': 'https://picsum.photos/200/200/?image=903',
     },
     {
-        'name': 'Nuevo auditorio',
-        'user': 'Thespianartist',
+        'title': 'Nuevo auditorio',
+        'user': {
+            'name':'Thespianartist',
+            'picture': 'https://picsum.photos/200/200/?image=1076',
+        },
         'timestamp': datetime.now().strftime('%b %dth, %Y - %H:%M hrs'),
-        'picture': 'https://picsum.photos/200/200/?image=1076',
+        'photo': 'https://picsum.photos/200/200/?image=1076',
     }
 ]
 
-def list_posts(requests):
+def list_posts(request):
     """list existing posts."""
-    content = []
-    for post in posts:
-            content.append("""
-            <p><strong>{name}</strong></p>
-            <p><small>{user} - <i>{timestamp}</i></small></p>
-            <figure><img src="{picture}"/></figure>
-            """.format(**post)
-            )
-    return HttpResponse('<br>'.join(content))
-    # Unimos toda nuestra etiqueta en un solo string.
+    
+    return render(request, 'feed.html', {'posts': posts})

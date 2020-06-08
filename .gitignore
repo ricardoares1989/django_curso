@@ -6,7 +6,7 @@ platzigram/__settings__.py
 manage.py
 posts/__init__.py
 posts/admin.py
-
+db.sqlite3
 
 
 
