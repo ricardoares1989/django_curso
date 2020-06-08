@@ -122,3 +122,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+# Colocamos esto para que llegue a la media de nuestro directorio.
+# BASE_DIR es doinde estamos parados, lo que hara join del BASE_DIR
+MEDIA_URL = '/media/'
+# En vez de buscar la url como una vista, busca algo estatico.
