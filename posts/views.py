@@ -2,6 +2,7 @@
 
 # Django
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 # from django.http import HttpResponse
 
 # utilities
@@ -38,7 +39,7 @@ posts = [
         'photo': 'https://picsum.photos/200/200/?image=1076',
     }
 ]
-
+@login_required
 def list_posts(request):
     """list existing posts."""
     

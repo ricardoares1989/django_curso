@@ -137,3 +137,5 @@ MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 # BASE_DIR es doinde estamos parados, lo que hara join del BASE_DIR
 MEDIA_URL = '/media/'
 # En vez de buscar la url como una vista, busca algo estatico.
+
+LOGIN_URL = '/user/login/'
