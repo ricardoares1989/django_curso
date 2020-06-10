@@ -7,16 +7,19 @@
 
 {% block container %}
 {% if error %}
-  <p style="color: red;"> {{error}}</p>
-
+  <p class="alert alert-danger">{{error}}</p>
 {% endif %}
 <!-- Es una validacion para no recibir ataques de otros sitios. -->
     <form action="{% url "login" %}" method="post">
         {% csrf_token %}
-        <input type="text" placeholder="Username" name="username">
-        <!-- nombre es el valor que se ba a recibir del lado del servidor. -->
-        <input type="password" placeholder="Password" name="password">
-        <button type="submit"> Sign in</button>
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Username" name="username">
+        </div>
+        <div class="form-group">
+          <input type="password" class="form-control" placeholder="Password" name="password">
+        </div>
+        <button class="btn btn-primary btn-block mt-5" type="submit">Sign in</button>
+
     </form>
   
 {% endblock %}

@@ -16,6 +16,8 @@ urlpatterns = [
     path('hi/<str:name>/<int:age>/', local_views.say_hi, name='hi'),
     path('posts/', posts_views.list_posts, name='feed' ),
     path('user/login/',users_views.login_view, name='login' ),
+    path('user/logout/',users_views.logout_view, name='logout' ),
+    path('user/signup/', users_views.signup, name='signup')
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 
 
