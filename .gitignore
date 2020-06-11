@@ -1,12 +1,5 @@
 env
-platzigram/asgi.py
-platzigram/wsgi.py
-platzigram/__init__.py
-platzigram/__settings__.py
-manage.py
-posts/__init__.py
-posts/admin.py
-db.sqlite3
+
 /media
 /users/pictures
 *.pyc

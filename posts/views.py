@@ -1,46 +1,41 @@
 """Posts views"""
 
 # Django
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 # from django.http import HttpResponse
 
-# utilities
-from datetime import datetime
+# Forms
+from posts.forms import PostForm
+
+# Models
+from posts.models import Post
+
 
 # Create your views here.
 
-posts = [
-    {
-        'title': 'Mont Blac',
-        'user': {
-            'name':'Yesica Cortes',
-            'picture': 'https://i.picsum.photos/id/1036/200/200.jpg',
-        },
-        'timestamp': datetime.now().strftime('%b %dth, %Y - %H:%M hrs'),
-        'photo': 'https://i.picsum.photos/id/1036/200/200.jpg',
-    },
-    {
-        'title': 'Via Láctea',
-        'user': {
-            'name':'C. Vander',
-            'picture': 'https://picsum.photos/200/200/?image=903',
-        },
-        'timestamp': datetime.now().strftime('%b %dth, %Y - %H:%M hrs'),
-        'photo': 'https://picsum.photos/200/200/?image=903',
-    },
-    {
-        'title': 'Nuevo auditorio',
-        'user': {
-            'name':'Thespianartist',
-            'picture': 'https://picsum.photos/200/200/?image=1076',
-        },
-        'timestamp': datetime.now().strftime('%b %dth, %Y - %H:%M hrs'),
-        'photo': 'https://picsum.photos/200/200/?image=1076',
-    }
-]
 @login_required
 def list_posts(request):
     """list existing posts."""
-    
+    posts = Post.objects.all().order_by('-created')
     return render(request, 'posts/feed.html', {'posts': posts})
+
+
+@login_required
+def create_post(request):
+    """Create new post view"""
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('feed')
+    else:
+        form = PostForm()
+    return render(
+        request=request,
+        template_name='posts/new.html',
+        context={
+            'form': form,
+            'user': request.user,
+            'profile': request.user.profile,
+        })

@@ -5,13 +5,64 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 # Exceptions
-from django.db.utils import IntegrityError
+# from django.db.utils import IntegrityError
 
 
 # local imports
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from users.models import Profile
+
+
+# Forms
+from users.forms import ProfileForm, SignupForm
+
 # Create your views here.
+
+
+def signup(request):
+    """singup view"""
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = SignupForm()
+    return render(
+        request=request,
+        template_name='users/signup.html',
+        context={'form':form},
+        #
+    )
+
+def update_profile(request):
+    """Update user profile view"""
+    profile = request.user.profile
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            data = form.cleaned_data
+            profile.website = data['website']
+            profile.phone_number = data['phone_number']
+            profile.biography = data['biography']
+            profile.picture = data['picture']
+            profile.save()
+
+            # Tenemos que redirigir a algun lugar.
+            return redirect('update_profile')
+    else:
+        form = ProfileForm()
+    return render(
+        request=request,
+        template_name='users/update_profile.html',
+        context={
+            'profile': profile,
+            'user': request.user,
+            'form': form,
+        }
+    )
+
+
 
 def login_view(request):
     """Login in view."""
@@ -36,27 +87,5 @@ def logout_view(request):
     return redirect('login')
 
 
-def signup(request):
-    """singup view"""
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        password_confirmation = request.POST['password_confirmation']
-        if password != password_confirmation:
-            return render(request, 'users/signup.html', {'error': 'Password confirmation does not match.'})
-            # Si las contraseñas no coinciden lo que haremos sera regresar el template y añadir un mensaje de error al contexto
-        try:
-            user = User.objects.create_user(username=username, password=password)
-        except IntegrityError:
-            return render(requests, 'users/signup.html', {'error':'Username is already in user.' })
-        
-        user = User.objects.create_user(username=username, password=password)
-        user.first_name= request.POST['first_name'] 
-        user.last_name= request.POST['last_name'] 
-        user.email= request.POST['email'] 
-        user.save()
-        profile = Profile(user=user)
-        profile.save()
-        # Si realizamos Profile.objects.create no se salva.
-        return redirect('login')
-    return render(request, 'users/signup.html')
+
+

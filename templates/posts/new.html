@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+  <title>Create new Post</title>
+{% endblock head_content %}
+
+{% block container %}
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-6 pt-3 pb-3" id="profile-box">
+                <h4 class="mb-4">Post a new photo!</h4>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% for error in form.errors  %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for e in error %}
+                            {{ e }}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <input type="hidden" name="user" value="{{ user.pk }}">
+                    <input type="hidden" name="profile" value="{{ profile.pk }}">
+                    <!-- Estamos agregando dos campos ocultos, el valor del user y el valor del profile
+                        Esto para ser suscpetible que nos creen un post a nombre de otro usario. -->
+
+                    {# Website field #}
+                    <div class="form-group">
+                        <input type="text"
+                                class="form-control {% if form.title.errors %} is-invalid {% endif %}"
+                                name="title"
+                                placeholder="Title"
+                                value=" {% if form.errors %} {{ form.photo.value }} {% endif %}"
+                                >
+                        <div class="invalid-feedback">
+                            {% for error in form.title.errors  %}
+                              {{ error }}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+
+                    {# Photo field #}
+                    <div class="form-group">
+                        <label>Choose your photo</label>
+                        <input type="file"
+                                class="form-control {% if form.photo.errors %} is-invalid {% endif %}"
+                                name="photo"
+                                placeholder="Photo"
+                                >
+                        <div class="invalid-feedback">
+                            {% for error in form.title.errors  %}
+                              {{ error}}
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block mt-5"> Publish </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock container %}
+
