@@ -3,6 +3,8 @@
 # Django
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView
 # from django.http import HttpResponse
 
 # Forms
@@ -14,11 +16,16 @@ from posts.models import Post
 
 # Create your views here.
 
-@login_required
-def list_posts(request):
-    """list existing posts."""
-    posts = Post.objects.all().order_by('-created')
-    return render(request, 'posts/feed.html', {'posts': posts})
+class PostsFeedView(LoginRequiredMixin, ListView):
+    """ Retunr all published posts."""
+    template_name = 'posts/feed.html'
+    model = Post
+    ordering = ('-created',)
+    paginate_by = 2
+    context_object_name = 'posts'
+    # El nombre del query en el contexto queremos que sea post.
+
+
 
 
 @login_required
@@ -37,5 +44,5 @@ def create_post(request):
         context={
             'form': form,
             'user': request.user,
-            'profile': request.user.profile,
+            'profile': request.user.profile
         })

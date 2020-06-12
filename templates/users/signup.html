@@ -12,7 +12,7 @@ meta o archivos de javascript para esta vista -->
     <p class="alert alert-danger">{{ error }}</p>
           
     {% endif %} -->
-    <form action="{% url "signup" %}" method="post">
+    <form action="{% url "users:signup" %}" method="post">
         <!-- Siempre que se agrega un formulario debemos agregar nuestro csrf token -->
         {% csrf_token %}
         <!-- <div class="form-group">

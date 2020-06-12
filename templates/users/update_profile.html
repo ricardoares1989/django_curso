@@ -10,7 +10,7 @@
 <div class="container">
     <div class="row justify-content-md-center">
         <div class="col-6 p-4" id="profile-box">
-            <form action="{% url 'update_profile' %}" method="post" enctype="multipart/form-data">
+            <form action="{% url 'users:update_profile' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 
                 <div class="media">
@@ -20,7 +20,7 @@
                         <img src="{% static 'img/default-profile.png' %}" alt="icon_profile" class="rounded-circle" height="50">                     
                     {% endif %}
                     <div class="media-body">
-                        <h5 class="ml-4">{{ user.username}} | {{ user.get_full_name }}</h5>
+                        <h5 class="ml-4">{{ request.user.username}} | {{ request.user.get_full_name }}</h5>
                         <!-- get_full_name es un metodo de la clase de uusario de django -->
                         <p class="ml-4">
                             <input type="file" name="picture" >

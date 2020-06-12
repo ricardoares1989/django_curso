@@ -16,14 +16,16 @@ class ProfileCompletionMiddleware:
 
     def __call__(self, request):
         """Code to be executed for each request before the view is called."""
+        
+     
         if not request.user.is_anonymous:
             if not request.user.is_staff:
                 profile = request.user.profile #Esta es una forma de traer los OnetoOneFields de nuestros modelos
                 if not profile.picture or not profile.biography:
-                    if request.path not in [reverse('update_profile'), reverse('logout')]:
+                    if request.path not in [reverse('users:update_profile'), reverse('users:logout')]:
                 # Vamos a traer una funcion de django que se llama reverse, la cual a partir de un nombre
                 # Traera la url
 
-                        return redirect('update_profile')
+                        return redirect('users:update_profile')
         response = self.get_response(request)
         return response
