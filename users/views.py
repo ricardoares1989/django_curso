@@ -1,12 +1,13 @@
 """User vies"""
 # Django imports
+from django.contrib.auth import views as auth_views
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from django.views.generic import DetailView
+from django.views.generic import DetailView, FormView, UpdateView
 # Exceptions
 # from django.db.utils import IntegrityError
 
@@ -16,11 +17,11 @@ from posts.models import Post
 
 # local imports
 # from django.contrib.auth.models import User
-# from users.models import Profile
+from users.models import Profile
 
 
 # Forms
-from users.forms import ProfileForm, SignupForm
+from users.forms import  SignupForm
 
 # Create your views here.
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -38,78 +39,45 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         context['posts'] = Post.objects.filter(user=user).order_by('created')
         return context
 
+class SignupView(FormView):
+    """USers signup view"""
+    template_name = 'users/signup.html'
+    form_class = SignupForm
+    success_url = reverse_lazy('users:log_in')
+    def form_valid(self, form):
+        """Save Form Data"""
+        form.save()
+        return super().form_valid(form)
 
 
-def signup(request):
-    """singup view"""
-    if request.method == 'POST':
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('users:log_in')
-    else:
-        form = SignupForm()
-    return render(
-        request=request,
-        template_name='users/signup.html',
-        context={'form':form},
-        #
-    )
+class UpdateUserView(LoginRequiredMixin, UpdateView):
+    """Update user profile views"""
+    template_name = 'users/update_profile.html'
+    model = Profile
+    # Ya no requerimos el form.
+    fields = ['website', 'biography', 'phone_number', 'picture']
 
-def update_profile(request):
-    """Update user profile view"""
-    profile = request.user.profile
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES)
-        if form.is_valid():
-            data = form.cleaned_data
-            profile.website = data['website']
-            profile.phone_number = data['phone_number']
-            profile.biography = data['biography']
-            profile.picture = data['picture']
-            profile.save()
-            url = reverse('users:detail', kwargs={'username':request.user.username})
-            # Tenemos que redirigir a algun lugar.
-            return redirect(url)
-    else:
-        form = ProfileForm()
-    return render(
-        request=request,
-        template_name='users/update_profile.html',
-        context={
-            'profile': profile,
-            'user': request.user,
-            'form': form,
-        }
-    )
+    def get_object(self):
+        """ return users profile"""
+        return self.request.user.profile
+
+    def get_success_url(self):
+        """Return to users profile"""
+        # Como el objeto se trajo de forma diferente entonces tenemos que sobreescribir el metood.
+        username = self.object.user.username
+        # self.object es el profile.
+        return reverse('users:detail', kwargs={'username':username})
+
+class LoginView(auth_views.LoginView):
+    """Login view"""
+    template_name = 'users/login_temp.html'
 
 
-
-def login_view(request):
-    """Login in view."""
-    if request.method == 'POST':
-
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-
-        if user:
-            login(request, user)
-            
-            # Esto hara la sesion
-            return redirect('posts:feed')
-        else:
-           
-            return render(request, 'users/login_temp.html' ,{'error': 'Invalid username and password'})
-    # import pdb; pdb.set_trace()
-    return render(request, 'users/login_temp.html')
+class LogoutView(LoginRequiredMixin, auth_views.LogoutView):
+    """Logout view"""
+    template_name = 'users/logged_out.html'
 
 
-@login_required
-def logout_view(request):
-    """Logout user"""
-    logout(request)
-    return redirect('users:log_in')
 
 
 

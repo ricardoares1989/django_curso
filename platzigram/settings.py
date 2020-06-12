@@ -140,3 +140,5 @@ MEDIA_URL = '/media/'
 # En vez de buscar la url como una vista, busca algo estatico.
 
 LOGIN_URL = '/users/log_in/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = LOGIN_URL
